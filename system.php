@@ -13,6 +13,56 @@ include("components/header.php");
             <p class="mt-3 text-3xl font-extrabold tracking-tight text-slate-900">Systems management</p>
 
             <div class="container mt-5">
+                <?php
+                require "classes/system.php";
+                if (isset($_POST["name"])) {
+                    $name = $_POST["name"];
+                    $system = new System();
+                    if ($system->add_system($name) == true) {
+                        echo '<script>
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "บันทึกข้อมูลสำเร็จ",
+                            showConfirmButton: false,
+                            timer: 1000
+                          }).then(() => {
+                            window.location.reload;
+                        });
+                        </script>
+                        ';
+                    } else {
+                        echo '<script>
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "error",
+                        title: "ชื่อระบบมีอยู่แล้ว",
+                        showConfirmButton: false,
+                        timer: 1000
+                      });
+                    </script>';
+                    }
+                }
+
+                if (isset($_POST['deletesystem_id'])) {
+                    $system = new System();
+                    if ($system->delete_system($_POST['deletesystem_id'])) {
+                        echo '<script>
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "ลบข้อมูลสำเร็จ",
+                            showConfirmButton: false,
+                            timer: 1000
+                          }).then(() => {
+                            window.location.reload;
+                        });
+                        </script>
+                        ';
+                    }
+                }
+
+                ?>
                 <button type="button" data-modal-target="crud-modal" data-modal-toggle="crud-modal" class="inline-flex items-center gap-x-2 rounded-md bg-emerald-500 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
@@ -21,162 +71,31 @@ include("components/header.php");
                 </button>
                 <hr class="my-3">
                 <ul role="list" class="divide-y divide-gray-100">
-                    <li class="flex items-center justify-between gap-x-6 py-5">
-                        <div class="min-w-0">
-                            <div class="flex items-start gap-x-3">
-                                <p class="text-sm font-semibold leading-6 text-gray-900">GraphQL API</p>
-                                <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20">Complete</p>
+                    <?php
+                    $system_show = new System();
+                    foreach ($system_show->show() as $system) {
+                    ?>
+                        <li class="flex items-center justify-between gap-x-6 py-5">
+                            <div class="min-w-0">
+                                <div class="flex items-start gap-x-3">
+                                    <p class="text-sm font-semibold leading-6 text-gray-900"><?php echo $system['system_name'] ?></p>
+                                    <!-- <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20">Complete</p> -->
+                                </div>
+                                <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
+                                    <p class="whitespace-nowrap">Customers : </p>
+                                    <p class="truncate">0 peoples</p>
+                                </div>
                             </div>
-                            <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
-                                <p class="whitespace-nowrap">Due on <time datetime="2023-03-17T00:00Z">March 17, 2023</time></p>
-                                <svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
-                                    <circle cx="1" cy="1" r="1" />
-                                </svg>
-                                <p class="truncate">Created by Leslie Alexander</p>
+                            <div class="flex flex-none items-center gap-x-4">
+                                <a href="#" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project</a>
+                                <button data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden rounded-md bg-amber-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-amber-600 sm:block">Edit system</button>
+                                <form action="" method="post" id="deleteForm">
+                                    <input type="text" hidden value="<?php echo $system['system_id'] ?>" name="deletesystem_id">
+                                    <button type="submit" onclick="confirmDelete(event)" class="hidden rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-500 sm:block">Delete system</button>
+                                </form>
                             </div>
-                        </div>
-                        <div class="flex flex-none items-center gap-x-4">
-                            <a href="#" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project<span class="sr-only">, GraphQL API</span></a>
-                            <div class="relative flex-none">
-                                <button type="button" class="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900" id="options-menu-0-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open options</span>
-                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" />
-                                    </svg>
-                                </button>
-                                <!-- <div class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-0-button" tabindex="-1">
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-0-item-0">Edit<span class="sr-only">, GraphQL API</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-0-item-1">Move<span class="sr-only">, GraphQL API</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-0-item-2">Delete<span class="sr-only">, GraphQL API</span></a>
-        </div> -->
-                            </div>
-                        </div>
-                    </li>
-                    <li class="flex items-center justify-between gap-x-6 py-5">
-                        <div class="min-w-0">
-                            <div class="flex items-start gap-x-3">
-                                <p class="text-sm font-semibold leading-6 text-gray-900">New benefits plan</p>
-                                <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">In progress</p>
-                            </div>
-                            <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
-                                <p class="whitespace-nowrap">Due on <time datetime="2023-05-05T00:00Z">May 5, 2023</time></p>
-                                <svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
-                                    <circle cx="1" cy="1" r="1" />
-                                </svg>
-                                <p class="truncate">Created by Leslie Alexander</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-none items-center gap-x-4">
-                            <a href="#" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project<span class="sr-only">, New benefits plan</span></a>
-                            <div class="relative flex-none">
-                                <button type="button" class="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900" id="options-menu-1-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open options</span>
-                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" />
-                                    </svg>
-                                </button>
-                                <!-- <div class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-1-button" tabindex="-1">
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-1-item-0">Edit<span class="sr-only">, New benefits plan</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-1-item-1">Move<span class="sr-only">, New benefits plan</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-1-item-2">Delete<span class="sr-only">, New benefits plan</span></a>
-        </div> -->
-                            </div>
-                        </div>
-                    </li>
-                    <li class="flex items-center justify-between gap-x-6 py-5">
-                        <div class="min-w-0">
-                            <div class="flex items-start gap-x-3">
-                                <p class="text-sm font-semibold leading-6 text-gray-900">Onboarding emails</p>
-                                <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">In progress</p>
-                            </div>
-                            <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
-                                <p class="whitespace-nowrap">Due on <time datetime="2023-05-25T00:00Z">May 25, 2023</time></p>
-                                <svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
-                                    <circle cx="1" cy="1" r="1" />
-                                </svg>
-                                <p class="truncate">Created by Courtney Henry</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-none items-center gap-x-4">
-                            <a href="#" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project<span class="sr-only">, Onboarding emails</span></a>
-                            <div class="relative flex-none">
-                                <button type="button" class="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900" id="options-menu-2-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open options</span>
-                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" />
-                                    </svg>
-                                </button>
-
-                                <!-- <div class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-2-button" tabindex="-1">
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-0">Edit<span class="sr-only">, Onboarding emails</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-1">Move<span class="sr-only">, Onboarding emails</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-2-item-2">Delete<span class="sr-only">, Onboarding emails</span></a>
-        </div> -->
-                            </div>
-                        </div>
-                    </li>
-                    <li class="flex items-center justify-between gap-x-6 py-5">
-                        <div class="min-w-0">
-                            <div class="flex items-start gap-x-3">
-                                <p class="text-sm font-semibold leading-6 text-gray-900">iOS app</p>
-                                <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-gray-600 bg-gray-50 ring-gray-500/10">In progress</p>
-                            </div>
-                            <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
-                                <p class="whitespace-nowrap">Due on <time datetime="2023-06-07T00:00Z">June 7, 2023</time></p>
-                                <svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
-                                    <circle cx="1" cy="1" r="1" />
-                                </svg>
-                                <p class="truncate">Created by Leonard Krasner</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-none items-center gap-x-4">
-                            <a href="#" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project<span class="sr-only">, iOS app</span></a>
-                            <div class="relative flex-none">
-                                <button type="button" class="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900" id="options-menu-3-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open options</span>
-                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" />
-                                    </svg>
-                                </button>
-                                <!-- <div class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-3-button" tabindex="-1">
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-3-item-0">Edit<span class="sr-only">, iOS app</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-3-item-1">Move<span class="sr-only">, iOS app</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-3-item-2">Delete<span class="sr-only">, iOS app</span></a>
-        </div> -->
-                            </div>
-                        </div>
-                    </li>
-                    <li class="flex items-center justify-between gap-x-6 py-5">
-                        <div class="min-w-0">
-                            <div class="flex items-start gap-x-3">
-                                <p class="text-sm font-semibold leading-6 text-gray-900">Marketing site redesign</p>
-                                <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-yellow-800 bg-yellow-50 ring-yellow-600/20">Archived</p>
-                            </div>
-                            <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
-                                <p class="whitespace-nowrap">Due on <time datetime="2023-06-10T00:00Z">June 10, 2023</time></p>
-                                <svg viewBox="0 0 2 2" class="h-0.5 w-0.5 fill-current">
-                                    <circle cx="1" cy="1" r="1" />
-                                </svg>
-                                <p class="truncate">Created by Courtney Henry</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-none items-center gap-x-4">
-                            <a href="#" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View project<span class="sr-only">, Marketing site redesign</span></a>
-                            <div class="relative flex-none">
-                                <button type="button" class="-m-2.5 block p-2.5 text-gray-500 hover:text-gray-900" id="options-menu-4-button" aria-expanded="false" aria-haspopup="true">
-                                    <span class="sr-only">Open options</span>
-                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M10 3a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM10 8.5a1.5 1.5 0 110 3 1.5 1.5 0 010-3zM11.5 15.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z" />
-                                    </svg>
-                                </button>
-                                <!-- <div class="absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="options-menu-4-button" tabindex="-1">
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-4-item-0">Edit<span class="sr-only">, Marketing site redesign</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-4-item-1">Move<span class="sr-only">, Marketing site redesign</span></a>
-          <a href="#" class="block px-3 py-1 text-sm leading-6 text-gray-900" role="menuitem" tabindex="-1" id="options-menu-4-item-2">Delete<span class="sr-only">, Marketing site redesign</span></a>
-        </div> -->
-                            </div>
-                        </div>
-                    </li>
+                        </li>
+                    <?php } ?>
                 </ul>
 
             </div>
@@ -184,7 +103,7 @@ include("components/header.php");
     </div>
 
 
-    <!-- Main modal -->
+    <!-- create modal -->
     <div id="crud-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-md max-h-full">
             <!-- Modal content -->
@@ -202,7 +121,7 @@ include("components/header.php");
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form action="logic/create-system.php" method="POST" class="p-4 md:p-5">
+                <form action="system.php" method="POST" class="p-4 md:p-5" id="createsystem">
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
@@ -219,6 +138,65 @@ include("components/header.php");
             </div>
         </div>
     </div>
+
+        <!-- edit modal -->
+        <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Edit System
+                    </h3>
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form action="" method="POST" class="p-4 md:p-5" id="editsystem">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+                        <div class="col-span-2">
+                            <label for="newname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                            <input type="text" name="newname" id="newname" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="New system name" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="text-white inline-flex items-center bg-amber-500 hover:bg-ember-700 focus:ring-4 focus:outline-none focus:ring-ember-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-ember-500 dark:hover:bg-ember-600 dark:focus:ring-ember-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+  <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+  <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+</svg>
+
+                        Update System
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById("deleteForm").submit();
+                }
+            });
+        }
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 
