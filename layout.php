@@ -9,10 +9,17 @@ include("components/header.php");
     include("components/sidebar.php");
     ?>
     <div class="p-4 sm:ml-64">
-        <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+        <div class="p-4 mt-14">
+            <p class="mt-3 text-3xl font-extrabold tracking-tight text-slate-900">Systems management</p>
 
+            <div class="container mt-5">
+             
+
+
+            </div>
         </div>
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>
 

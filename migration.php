@@ -49,3 +49,33 @@ if ($stmt->execute()) {
 } else {
     echo "Error to migration (systems)";
 }
+
+
+// customers table
+$check_table_customers = "SHOW TABLES LIKE 'customers'";
+$stmt_check_customers = $pdo->prepare($check_table_customers);
+$stmt_check_customers->execute();
+$table_customers_exists = $stmt_check_customers->fetch(PDO::FETCH_ASSOC);
+
+if ($table_customers_exists) {
+    $drop_table_customers = "DROP TABLE IF EXISTS customers";
+    $stmt_drop_customers = $pdo->prepare($drop_table_customers);
+    $stmt_drop_customers->execute();
+}
+
+$customers_table = "CREATE TABLE customers (
+    customers_id INT AUTO_INCREMENT PRIMARY KEY,
+    customers_name VARCHAR(255) NOT NULL,
+    customers_requirement TEXT NOT NULL,
+    customers_tel VARCHAR(10) NOT NULL,
+    status_id INT NOT NULL,
+    start_at  datetime DEFAULT NULL,
+    end_at  datetime DEFAULT NULL
+)";
+$stmt = $pdo->prepare($customers_table);
+
+if ($stmt->execute()) {
+    echo "<h3>Migration success (customers)<h3>";
+} else {
+    echo "Error to migration (customers)";
+}
