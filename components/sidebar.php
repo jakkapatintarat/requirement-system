@@ -1,8 +1,9 @@
-<?php
-require_once './classes/system.php';
+<?php 
+require_once './database.php';
 
-$system = new System();
-$systems = $system->show();
+$stmt = $pdo->prepare('SELECT system_name FROM systems');
+$stmt->execute();
+$systems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700" aria-label="Sidebar">
     <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
@@ -36,20 +37,19 @@ $systems = $system->show();
                     </svg>
                 </button>
                 <ul id="dropdown-example" class="hidden py-2 space-y-2">
-                    <?php foreach( $systems as $item ) : ?>
+                    <?php foreach( $systems as $system ) { ?>
                     <li>
                         <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                            <?php echo $item['system_name'] ?>
-                        </a>
+                            <?php echo $system['system_name'] ?>
+                    </a>
                     </li>
-
-                    <?php endforeach; ?>
-                                        <!-- <li>
+                    <!-- <li>
                         <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Billing</a>
                     </li>
                     <li>
                         <a href="#" class="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">Invoice</a>
                     </li> -->
+                    <?php } ?>
                 </ul>
             </li>
             <li>

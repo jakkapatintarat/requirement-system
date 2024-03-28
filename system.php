@@ -109,7 +109,7 @@ include("components/header.php");
                         <li class="flex items-center justify-between gap-x-6 py-5">
                             <div class="min-w-0">
                                 <div class="flex items-start gap-x-3">
-                                    <p class="text-sm font-semibold leading-6 text-gray-900"><?php echo $system['system_name'] ?></p>
+                                    <a href="system_customer.php?system_id=<?php echo $system['system_id'] ?>" class="text-sm font-semibold leading-6 text-gray-900"><?php echo $system['system_name'] ?></a>
                                     <!-- <p class="rounded-md whitespace-nowrap mt-0.5 px-1.5 py-0.5 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20">Complete</p> -->
                                 </div>
                                 <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
