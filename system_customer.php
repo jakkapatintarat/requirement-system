@@ -17,38 +17,22 @@ include("components/header.php");
     $system = new System();
     $system_data = $system->find_one($system_id);
 
-    // จัดการ request ต่างๆเกี่ยวกับลูกค้า
-    // require 'classes/customer.php';
-    // $customer = new Customer();
-
-    // if (isset($_POST['c_name'])) {
-    //     $c_name = $_POST['c_name'];
-    //     $c_requirement = $_POST['c_requirement'];
-
-    //     $data = [$c_name, $c_requirement];
-    //     $customer->create_customer($data);
-    // }
+    // จัดการ request ลูกค้า
+    require 'classes/customer.php';
+    $cus = new Customer();
+    $customers = $cus->show();  // เรียกใช้ func show เพื่อแสดงข้อมูล
+    if (isset($_POST['c_name'])) {
+        $data = $_POST;
+        $cus->create_customer($data);
+    }
 
 
     ?>
+
+
     <div class="p-4 sm:ml-64">
         <div class="p-4 mt-14">
             <div class="container mt-5">
-                <?php
-                // จัดการ request ต่างๆเกี่ยวกับลูกค้า
-                require 'classes/customer.php';
-                $customer = new Customer();
-
-                if (isset($_POST['c_name'])) {
-                    $c_name = $_POST['c_name'];
-                    $c_requirement = $_POST['c_requirement'];
-
-                    $data = ['c_name' => $c_name, 'c_requiremant' => $c_requirement];
-                    $customer->create_customer($data);
-                }
-
-
-                ?>
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="sm:flex sm:items-center">
                         <div class="sm:flex-auto">
@@ -87,55 +71,74 @@ include("components/header.php");
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray/5">
-                                            <tr>
-                                                <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
-                                                    <div class="flex items-center gap-x-4">
-                                                        <div class="truncate text-sm font-medium leading-6 text-gray">Michael Foster</div>
-                                                    </div>
-                                                </td>
-                                                <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
-                                                    <div class="flex gap-x-3">
-                                                        <div class="font-mono text-sm leading-6 text-gray">2d89f0c82</div>
-                                                    </div>
-                                                </td>
-                                                <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
-                                                    <div class="flex items-center justify-end gap-x-2 sm:justify-start">
-                                                        <time class="text-gray-400 sm:hidden" datetime="2023-01-23T11:00">45 minutes ago</time>
-                                                        <div class="flex-none rounded-full p-1 text-green-400 bg-green-400/10">
-                                                            <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                            <?php foreach ($customers as $customer) : ?>
+                                                <tr>
+                                                    <td class="py-4 pl-4 pr-8 sm:pl-6 lg:pl-8">
+                                                        <div class="flex items-center gap-x-4">
+                                                            <div class="truncate text-sm font-medium leading-6 text-gray"><?php echo $customer['customer_name'] ?></div>
                                                         </div>
-                                                        <div class="hidden text-gray-500 sm:block">Completed</div>
+                                                    </td>
+                                                    <td class="hidden py-4 pl-0 pr-4 sm:table-cell sm:pr-8">
+                                                        <div class="flex gap-x-3">
+                                                            <div class="font-mono text-sm leading-6 text-gray"><?php  echo substr($customer['customer_requirement'], 0, 80).'...'; ?></div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-4 pl-0 pr-4 text-sm leading-6 sm:pr-8 lg:pr-20">
+                                                        <div class="flex items-center justify-end gap-x-2 sm:justify-start">
+                                                            <?php if ($customer['status_id'] == 1) { ?>
+                                                                <div class="flex-none rounded-full p-1 text-gray-400 bg-gray-400/10">
+                                                                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                                </div>
+                                                            <?php } elseif ($customer['status_id'] == 2) { ?>
+                                                                <div class="flex-none rounded-full p-1 text-green-400 bg-green-400/10">
+                                                                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                                </div>
+                                                            <?php } elseif ($customer['status_id'] == 3) { ?>
+                                                                <div class="flex-none rounded-full p-1 text-yellow-400 bg-yellow-400/10">
+                                                                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                                </div>
+                                                            <?php } elseif ($customer['status_id'] == 4) { ?>
+                                                                <div class="flex-none rounded-full p-1 text-red-400 bg-red-400/10">
+                                                                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                                </div>
+                                                            <?php } else { ?>
+                                                                <div class="flex-none rounded-full p-1 text-blue-400 bg-blue-400/10">
+                                                                    <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                                </div>
+                                                            <?php } ?>
+                                                            <div class="hidden text-gray-500 sm:block"><?php echo $customer['status_name'] ?></div>
 
-                                                        <!-- แก้ไข สถานะ -->
-                                                        <button type="button" data-modal-target="edit-s-modal" data-modal-toggle="edit-s-modal" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1.5 py-1 me-2 mb-2 dark:focus:ring-yellow-900">
-                                                            <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                            <!-- ปุุ่ม แก้ไข สถานะ -->
+                                                            <button type="button" data-modal-target="edit-s-modal" data-modal-toggle="edit-s-modal" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1.5 py-1 me-2 mb-2 dark:focus:ring-yellow-900">
+                                                                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"><?php echo $customer['customer_tel'] ?></td>
+                                                    <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
+                                                        <time datetime="<?php echo $customer['start_at'] ?>"><?php echo date('d-m-Y', strtotime($customer['start_at'])) ?></time>
+                                                    </td>
+                                                    <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
+                                                        <button type="button" class="focus:outline-none text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-blue-900">
+                                                            <svg class="w-6 h- text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                            </svg>
+                                                        </button>
+                                                        <button type="button" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-yellow-900">
+                                                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
                                                             </svg>
                                                         </button>
-                                                    </div>
-                                                </td>
-                                                <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20">0841085079</td>
-                                                <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
-                                                    <time datetime="2023-01-23T11:00">45 minutes ago</time>
-                                                </td>
-                                                <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
-                                                    <button type="button" class="focus:outline-none text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-blue-900">
-                                                        <svg class="w-6 h- text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                        </svg>
-                                                    </button>
-                                                    <button type="button" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-yellow-900">
-                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-                                                        </svg>
-                                                    </button>
-                                                    <button type="button" class="focus:outline-none text-white bg-red-400 hover:bg-red-500 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-red-900">
-                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
-                                                        </svg>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                                        <button type="button" class="focus:outline-none text-white bg-red-400 hover:bg-red-500 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-red-900">
+                                                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                                                            </svg>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
 
                                             <!-- Edit status modal edit-s-modal -->
                                             <div id="edit-s-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -160,28 +163,16 @@ include("components/header.php");
                                                             <ul class="my-4 space-y-3">
                                                                 <li>
                                                                     <a href="#" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-green-50 hover:bg-green-100 group hover:shadow dark:bg-green-600 dark:hover:bg-green-500 dark:text-white">
-                                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd" />
-                                                                        </svg>
                                                                         <span class="flex-1 ms-3 whitespace-nowrap">Complete</span>
                                                                     </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="#" class="flex items-center p-3 text-base font-bold text-yellow-900 rounded-lg bg-yellow-50 hover:bg-yellow-100 group hover:shadow dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:text-white">
-                                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                                            <path d="M13.5 2c-.178 0-.356.013-.492.022l-.074.005a1 1 0 0 0-.934.998V11a1 1 0 0 0 1 1h7.975a1 1 0 0 0 .998-.934l.005-.074A7.04 7.04 0 0 0 22 10.5 8.5 8.5 0 0 0 13.5 2Z" />
-                                                                            <path d="M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z" />
-                                                                        </svg>
-
                                                                         <span class="flex-1 ms-3 whitespace-nowrap">In progress</span>
                                                                     </a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="#" class="flex items-center p-3 text-base font-bold text-red-900 rounded-lg bg-red-50 hover:bg-red-100 group hover:shadow dark:bg-red-600 dark:hover:bg-red-500 dark:text-white">
-                                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd" />
-                                                                        </svg>
-
                                                                         <span class="flex-1 ms-3 whitespace-nowrap">Canceled</span>
                                                                     </a>
                                                                 </li>
@@ -192,7 +183,7 @@ include("components/header.php");
                                             </div>
                                             <!-- end status modal -->
 
-                                            <!-- Edit status modal edit-s-modal -->
+                                            <!-- Edit modal -->
                                             <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                                                 <div class="relative p-4 w-full max-w-md max-h-full">
                                                     <!-- Modal content -->
@@ -245,7 +236,7 @@ include("components/header.php");
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- end status modal -->
+                                            <!-- end edit modal -->
 
 
 
@@ -477,8 +468,12 @@ include("components/header.php");
                             <input type="text" name="c_name" id="c_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="customer name" required>
                         </div>
                         <div class="col-span-2">
-                            <label for="c_requirement" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requirement</label>
-                            <input type="text" name="c_requirement" id="c_requirement" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Requirement" required>
+                            <label for="c_req" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requirement</label>
+                            <input type="text" name="c_req" id="c_req" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Requirement" required>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="c_tel" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">เบอร์โทรศัพท์</label>
+                            <input type="text" name="c_tel" id="c_tel" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Requirement" required>
                         </div>
                     </div>
                     <button type="submit" class="text-white inline-flex items-center bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-emerald-500 dark:hover:bg-emerald-600 dark:focus:ring-emerald-300">

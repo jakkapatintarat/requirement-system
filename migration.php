@@ -64,11 +64,11 @@ if ($table_customers_exists) {
 }
 
 $customers_table = "CREATE TABLE customers (
-    customers_id INT AUTO_INCREMENT PRIMARY KEY,
-    customers_name VARCHAR(255) NOT NULL,
-    customers_requirement TEXT NOT NULL,
-    customers_tel VARCHAR(10) NOT NULL,
-    status_id INT NOT NULL,
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_requirement TEXT NOT NULL,
+    customer_tel VARCHAR(10) NOT NULL,
+    status_id INT DEFAULT 1,
     start_at  datetime DEFAULT NULL,
     end_at  datetime DEFAULT NULL
 )";
@@ -78,4 +78,28 @@ if ($stmt->execute()) {
     echo "<h3>Migration success (customers)<h3>";
 } else {
     echo "Error to migration (customers)";
+}
+
+// status table
+$check_table_status = "SHOW TABLES LIKE 'status'";
+$stmt_check_status = $pdo->prepare($check_table_status);
+$stmt_check_status->execute();
+$table_status_exists = $stmt_check_status->fetch(PDO::FETCH_ASSOC);
+
+if ($table_status_exists) {
+    $drop_table_status = "DROP TABLE IF EXISTS status";
+    $stmt_drop_status = $pdo->prepare($drop_table_status);
+    $stmt_drop_status->execute();
+}
+
+$status_table = "CREATE TABLE status (
+    status_id INT AUTO_INCREMENT PRIMARY KEY,
+    status_name VARCHAR(255) UNIQUE NOT NULL
+)";
+$stmt = $pdo->prepare($status_table);
+
+if ($stmt->execute()) {
+    echo "<h3>Migration success (status)<h3>";
+} else {
+    echo "Error to migration (status)";
 }
