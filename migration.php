@@ -68,6 +68,7 @@ $customers_table = "CREATE TABLE customers (
     customer_name VARCHAR(255) NOT NULL,
     customer_requirement TEXT NOT NULL,
     customer_tel VARCHAR(10) NOT NULL,
+    system_id INT NOT NULL,
     status_id INT DEFAULT 1,
     start_at  datetime DEFAULT NULL,
     end_at  datetime DEFAULT NULL
