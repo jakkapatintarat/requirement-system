@@ -37,10 +37,10 @@ include("components/header.php");
         $cus->update_status($data);
     }
 
-    if(isset($_GET['u_c_name'])){
-        $data = $_GET;
-        $cus->update_customer($data);
-    }
+    // if (isset($_GET['u_c_name'])) {
+    //     $data = $_GET;
+    //     $cus->update_customer($data);
+    // }
 
     // แสดง status
     require 'classes/status.php';
@@ -55,6 +55,10 @@ include("components/header.php");
             <div class="container mt-5">
                 <?php
                 //ทดสอบข้อมูล
+                if (isset($_GET['u_c_name'])) {
+                    $data = $_GET;
+                    $cus->update_customer($data);
+                }
                 ?>
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="sm:flex sm:items-center">
@@ -262,7 +266,7 @@ include("components/header.php");
                                                                         <div class="col-span-2">
                                                                             <label for="u_c_tel" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">เบอร์โทรศัพท์</label>
                                                                             <input type="text" name="u_c_tel" id="u_c_tel" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="<?php echo $customer['customer_tel'] ?>" required>
-                                                                            <input type="text" value="" name="u_c_id" id="u_c_id" hidden>
+                                                                            <input type="text" value="<?php echo $customer['customer_id'] ?>" name="u_c_id" id="u_c_id" hidden>
                                                                         </div>
                                                                     </div>
                                                                     <button type="submit" class="text-white inline-flex items-center bg-amber-500 hover:bg-ember-700 focus:ring-4 focus:outline-none focus:ring-ember-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-ember-500 dark:hover:bg-ember-600 dark:focus:ring-ember-300">
