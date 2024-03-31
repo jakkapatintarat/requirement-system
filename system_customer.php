@@ -37,6 +37,11 @@ include("components/header.php");
         $cus->update_status($data);
     }
 
+    if(isset($_GET['u_c_name'])){
+        $data = $_GET;
+        $cus->update_customer($data);
+    }
+
     // แสดง status
     require 'classes/status.php';
     $status = new Status();
@@ -100,8 +105,8 @@ include("components/header.php");
                                                         <div class="flex gap-x-3">
                                                             <div class="font-mono text-sm leading-6 text-gray">
                                                                 <?php
-                                                                if (strlen($customer['customer_requirement']) > 80) {
-                                                                    echo substr($customer['customer_requirement'], 0, 80) . '...';
+                                                                if (strlen($customer['customer_requirement']) > 40) {
+                                                                    echo substr($customer['customer_requirement'], 0, 40) . '...';
                                                                 } else {
                                                                     echo $customer['customer_requirement'];
                                                                 }
@@ -128,7 +133,7 @@ include("components/header.php");
                                                                     <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
                                                                 </div>
                                                             <?php } else { ?>
-                                                                <div class="flex-none rounded-full p-1 text-blue-400 bg-blue-400/10">
+                                                                <div class="flex-none rounded-full p-1 text-violet-400 bg-violet-400/10">
                                                                     <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
                                                                 </div>
                                                             <?php } ?>
@@ -180,7 +185,7 @@ include("components/header.php");
                                                                                                 <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
                                                                                             </a>
                                                                                         <?php } else { ?>
-                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-blue-50 hover:bg-blue-100 group hover:shadow dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white">
+                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-violet-50 hover:bg-violet-100 group hover:shadow dark:bg-violet-600 dark:hover:bg-violet-500 dark:text-white">
                                                                                                 <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
                                                                                             </a>
                                                                                         <?php }; ?>
@@ -199,11 +204,13 @@ include("components/header.php");
                                                         <time datetime="<?php echo $customer['start_at'] ?>"><?php echo date('d-m-Y', strtotime($customer['start_at'])) ?></time>
                                                     </td>
                                                     <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
-                                                        <button type="button" class="focus:outline-none text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-blue-900">
-                                                            <svg class="w-6 h- text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                                            </svg>
-                                                        </button>
+                                                        <a href="customer_detail.php?customer_id=<?php echo $customer['customer_id'] ?>">
+                                                            <button type="button" class="focus:outline-none text-white bg-blue-400 hover:bg-blue-500 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-blue-900">
+                                                                <svg class="w-6 h- text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                                </svg>
+                                                            </button>
+                                                        </a>
                                                         <button type="button" data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-2 py-1.5 me-2 mb-2 dark:focus:ring-yellow-900">
                                                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
@@ -220,64 +227,62 @@ include("components/header.php");
                                                         </form>
                                                     </td>
                                                 </tr>
+
+                                                <!-- Edit modal -->
+                                                <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                                                    <div class="relative p-4 w-full max-w-md max-h-full">
+                                                        <!-- Modal content -->
+                                                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                                                            <!-- Modal header -->
+                                                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                                                    แก้ไขข้อมูลลูกค้า
+                                                                </h3>
+                                                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="edit-modal">
+                                                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                                    </svg>
+                                                                    <span class="sr-only">Close modal</span>
+                                                                </button>
+                                                            </div>
+                                                            <!-- Modal body -->
+                                                            <div class="p-4 md:p-5">
+                                                                <form action="" method="GET" class="my-4 space-y-3">
+                                                                    <div class="grid gap-4 mb-4 grid-cols-2">
+                                                                        <div class="col-span-2">
+                                                                            <label for="u_c_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ชื่อ</label>
+                                                                            <input type="text" name="u_c_name" id="u_c_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="<?php echo $customer['customer_name'] ?>" required>
+                                                                        </div>
+                                                                        <div class="col-span-2">
+                                                                            <label for="u_c_req" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Requirement</label>
+                                                                            <div class="mt-2.5">
+                                                                                <textarea name="u_c_req" id="u_c_req" rows="4" class="block w-full rounded-md border-0 px-3.5 py-2 text-white bg-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary-600 sm:text-sm sm:leading-6" required><?php echo $customer['customer_requirement'] ?></textarea>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-span-2">
+                                                                            <label for="u_c_tel" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">เบอร์โทรศัพท์</label>
+                                                                            <input type="text" name="u_c_tel" id="u_c_tel" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" value="<?php echo $customer['customer_tel'] ?>" required>
+                                                                            <input type="text" value="" name="u_c_id" id="u_c_id" hidden>
+                                                                        </div>
+                                                                    </div>
+                                                                    <button type="submit" class="text-white inline-flex items-center bg-amber-500 hover:bg-ember-700 focus:ring-4 focus:outline-none focus:ring-ember-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-ember-500 dark:hover:bg-ember-600 dark:focus:ring-ember-300">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                                                            <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                                                            <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                                                        </svg>
+                                                                        Update Customer
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- end edit modal -->
                                             <?php endforeach; ?>
 
 
 
-                                            <!-- Edit modal -->
-                                            <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                                <div class="relative p-4 w-full max-w-md max-h-full">
-                                                    <!-- Modal content -->
-                                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                                        <!-- Modal header -->
-                                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                                แก้ไขข้อมูลลูกค้า
-                                                            </h3>
-                                                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="edit-modal">
-                                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                                                </svg>
-                                                                <span class="sr-only">Close modal</span>
-                                                            </button>
-                                                        </div>
-                                                        <!-- Modal body -->
-                                                        <div class="p-4 md:p-5">
-                                                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">เลือกสถานะเพื่อแก้ไข</p>
-                                                            <ul class="my-4 space-y-3">
-                                                                <li>
-                                                                    <a href="#" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd" />
-                                                                        </svg>
-                                                                        <span class="flex-1 ms-3 whitespace-nowrap">Complete</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                                            <path d="M13.5 2c-.178 0-.356.013-.492.022l-.074.005a1 1 0 0 0-.934.998V11a1 1 0 0 0 1 1h7.975a1 1 0 0 0 .998-.934l.005-.074A7.04 7.04 0 0 0 22 10.5 8.5 8.5 0 0 0 13.5 2Z" />
-                                                                            <path d="M11 6.025a1 1 0 0 0-1.065-.998 8.5 8.5 0 1 0 9.038 9.039A1 1 0 0 0 17.975 13H11V6.025Z" />
-                                                                        </svg>
 
-                                                                        <span class="flex-1 ms-3 whitespace-nowrap">In progress</span>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-gray-50 hover:bg-gray-100 group hover:shadow dark:bg-gray-600 dark:hover:bg-gray-500 dark:text-white">
-                                                                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                                                            <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z" clip-rule="evenodd" />
-                                                                        </svg>
-
-                                                                        <span class="flex-1 ms-3 whitespace-nowrap">Canceled</span>
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- end edit modal -->
                                         </tbody>
                                     </table>
                                 </div>

@@ -23,7 +23,7 @@ $status = [
     'Pending',
     'Complete',
     'In progress',
-    'Cancled'
+    'Canceled'
 ];
 
 $insert_status = $pdo->prepare('INSERT INTO status (status_name) VALUE (:status_name)');
