@@ -10,10 +10,32 @@ include("components/header.php");
     ?>
     <div class="p-4 sm:ml-64">
         <div class="p-4 mt-14">
+            <?php
+            require 'classes/dashboard.php';
+            require 'classes/status.php';
+            require 'classes/system.php';
+
+            $dashboard = new Dashboard();
+            $status = new Status();
+            $system = new System();
+
+            $customers = $dashboard->get_customer();
+            $systems = $dashboard->get_system();
+            $show_system = $system->show();
+            $show_status = $status->show();
+            // print_r($show_system);
+
+            if (isset($_GET['system'])) {
+                $system_id = $_GET['system'];
+                $status_id = $_GET['status'];
+            }
+
+            ?>
+
             <!-- card list -->
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="mx-auto max-w-2xl lg:mx-0 lg:max-w-none">
-                    <ul role="list" class="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-3 xl:gap-x-8">
+                    <ul role="list" class="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 lg:grid-cols-2 xl:gap-x-8">
                         <li class="overflow-hidden rounded-xl border border-gray-200">
                             <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
                                 <svg class="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -33,14 +55,13 @@ include("components/header.php");
                             </div>
                             <dl class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                                 <div class="flex justify-between gap-x-4 py-3">
-                                    <dt class="text-gray-500">Last invoice</dt>
-                                    <dd class="text-gray-700"><time datetime="2022-12-13">December 13, 2022</time></dd>
+                                    <dt class="text-gray-500">Last create</dt>
+                                    <dd class="text-gray-700"><?php echo $systems['system']['system_name'] ?></dd>
                                 </div>
                                 <div class="flex justify-between gap-x-4 py-3">
                                     <dt class="text-gray-500">Amount</dt>
                                     <dd class="flex items-start gap-x-2">
-                                        <div class="font-medium text-gray-900">$2,000.00</div>
-                                        <div class="rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-red-700 bg-red-50 ring-red-600/10">Overdue</div>
+                                        <div class="font-medium text-gray-900"><?php echo $systems['system_count']['count'] ?></div>
                                     </dd>
                                 </div>
                             </dl>
@@ -54,42 +75,17 @@ include("components/header.php");
                             </div>
                             <dl class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                                 <div class="flex justify-between gap-x-4 py-3">
-                                    <dt class="text-gray-500">Last invoice</dt>
-                                    <dd class="text-gray-700"><time datetime="2023-01-22">January 22, 2023</time></dd>
-                                </div>
-                                <div class="flex justify-between gap-x-4 py-3">
-                                    <dt class="text-gray-500">Amount</dt>
-                                    <dd class="flex items-start gap-x-2">
-                                        <div class="font-medium text-gray-900">$14,000.00</div>
-                                        <div class="rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20">Paid</div>
+                                    <dt class="text-gray-500">Last create</dt>
+                                    <dd class="text-gray-600">ชื่อ: <?php echo $customers['customer']['customer_name'] ?></dd>
+                                    <dd class="text-gray-600">ระบบ: <?php echo $customers['customer']['system_name'] ?></dd>
+                                    <dd class="text-gray-700"><time datetime="<?php echo $customers['customer']['start_at'] ?>"><?php echo date('j F Y', strtotime($customers['customer']['start_at'])) ?></time>
                                     </dd>
-                                </div>
-                            </dl>
-                        </li>
-                        <li class="overflow-hidden rounded-xl border border-gray-200">
-                            <div class="flex items-center gap-x-4 border-b border-gray-900/5 bg-gray-50 p-6">
-                                <svg class="h-12 w-12 flex-none rounded-lg bg-white object-cover ring-1 ring-gray-900/10" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                    <path fill-rule="evenodd" d="M17 10v1.126c.367.095.714.24 1.032.428l.796-.797 1.415 1.415-.797.796c.188.318.333.665.428 1.032H21v2h-1.126c-.095.367-.24.714-.428 1.032l.797.796-1.415 1.415-.796-.797a3.979 3.979 0 0 1-1.032.428V20h-2v-1.126a3.977 3.977 0 0 1-1.032-.428l-.796.797-1.415-1.415.797-.796A3.975 3.975 0 0 1 12.126 16H11v-2h1.126c.095-.367.24-.714.428-1.032l-.797-.796 1.415-1.415.796.797A3.977 3.977 0 0 1 15 11.126V10h2Zm.406 3.578.016.016c.354.358.574.85.578 1.392v.028a2 2 0 0 1-3.409 1.406l-.01-.012a2 2 0 0 1 2.826-2.83ZM5 8a4 4 0 1 1 7.938.703 7.029 7.029 0 0 0-3.235 3.235A4 4 0 0 1 5 8Zm4.29 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h6.101A6.979 6.979 0 0 1 9 15c0-.695.101-1.366.29-2Z" clip-rule="evenodd" />
-                                </svg>
-                                <div class="text-sm font-medium leading-6 text-gray-900">Users</div>
-                                <div class="relative ml-auto">
-                                    <button type="button" class="-m-2.5 block p-2.5 text-gray-400 hover:text-gray-500" id="options-menu-2-button" aria-expanded="false" aria-haspopup="true">
-                                        <svg class="w-6 h-6 text-gray-600 dark:text-gray" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <dl class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
-                                <div class="flex justify-between gap-x-4 py-3">
-                                    <dt class="text-gray-500">Last invoice</dt>
-                                    <dd class="text-gray-700"><time datetime="2023-01-23">January 23, 2023</time></dd>
+
                                 </div>
                                 <div class="flex justify-between gap-x-4 py-3">
                                     <dt class="text-gray-500">Amount</dt>
                                     <dd class="flex items-start gap-x-2">
-                                        <div class="font-medium text-gray-900">$7,600.00</div>
-                                        <div class="rounded-md py-1 px-2 text-xs font-medium ring-1 ring-inset text-green-700 bg-green-50 ring-green-600/20">Paid</div>
+                                        <div class="font-medium text-gray-900"><?php echo $customers['customer_count']['count'] ?></div>
                                     </dd>
                                 </div>
                             </dl>
@@ -98,85 +94,121 @@ include("components/header.php");
                 </div>
             </div>
             <!-- end card list -->
-            <div class="my-10">
+
+            <div class="my-5">
                 <hr class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            </div>
+
+            <div class="my-5 mx-auto max-w-7xl px-4 sm:px-6 lg-px-8">
+                <div class="sm:flex-auto">
+                    <span class="text-sm font-medium text-gray-900">ค้นหาข้อมูลระบบ</span>
+                    <form action="" method="GET">
+                        <div class="flex flex-col sm:flex-row">
+                            <div class="mr-2">
+                                <select class="w-full border-gray-300 mr-0 sm:mr-2 mb-2 sm:mb-0 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="system" id="system">
+                                    <option value="" hidden>ระบบ</option>
+                                    <?php foreach ($show_system as $item) : ?>
+                                        <option value="<?php echo $item['system_id'] ?>">
+                                            <?php echo $item['system_name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="mr-2">
+                                <select class="w-full border-gray-300 mr-0 sm:mr-2 mb-2 sm:mb-0 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="status" id="status">
+                                    <option value="" hidden>สถานะ</option>
+                                    <?php foreach ($show_status as $item) : ?>
+                                        <option value="<?php echo $item['status_id'] ?>">
+                                            <?php echo $item['status_name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="mr-2">
+                                <input class="w-full border-gray-300 mr-0 sm:mr-2 mb-2 sm:mb-0 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" id="name" name="name" value="" placeholder="ค้นหาชื่อลูกค้า">
+                            </div>
+
+                            <div class="flex justify-center ">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-sm text-gray-700 uppercase hover:bg-gray-100 active:bg-gray-300 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition mr-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    ค้นหา
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- table -->
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="sm:flex sm:items-center">
                     <div class="sm:flex-auto">
-                        <h1 class="text-base font-semibold leading-6 text-gray-900">Systems</h1>
-                        <p class="mt-2 text-sm text-gray-700">A list of all the users in your account including their name, title, email and role.</p>
+                        <h1 class="text-base font-semibold leading-6 text-gray-900">ภาพรวมระบบ</h1>
+                        <!-- <p class="mt-2 text-sm text-gray-600">รายการภาพรวม ระบบ <span>
+                                ชื่อระบบ </span> สถานะ<span>
+                                ชื่อสถานะ </span></p> -->
                     </div>
                 </div>
-                <div class="mt-8 flow-root">
+                <div class="mt-5 flow-root">
                     <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                         <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                            <table class="min-w-full divide-y divide-gray-300">
-                                <thead>
+                            <table class="min-w-full divide-y divide-gray-800">
+                                <thead class="bg-gray-200">
                                     <tr>
-                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                            <a href="#" class="group inline-flex">
-                                                Name
-                                                <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
-                                                <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                            <a href="#" class="group inline-flex">
-                                                Title
-                                                <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
-                                                <span class="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
-                                                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                            <a href="#" class="group inline-flex">
-                                                Email
-                                                <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
-                                                <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                    <svg class="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                            <a href="#" class="group inline-flex">
-                                                Role
-                                                <!-- Active: "bg-gray-200 text-gray-900 group-hover:bg-gray-300", Not Active: "invisible text-gray-400 group-hover:visible group-focus:visible" -->
-                                                <span class="invisible ml-2 flex-none rounded text-gray-400 group-hover:visible group-focus:visible">
-                                                    <svg class="invisible ml-2 h-5 w-5 flex-none rounded text-gray-400 group-hover:visible group-focus:visible" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                                                    </svg>
-                                                </span>
-                                            </a>
-                                        </th>
-                                        <th scope="col" class="relative py-3.5 pl-3 pr-0">
+                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">ชื่อ</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Requirement</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">สถานะ</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">เบอร์โทร</th>
+                                        <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                             <span class="sr-only">Edit</span>
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
-                                    <tr>
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">Lindsay Walton</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Front-end Developer</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">lindsay.walton@example.com</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">Member</td>
-                                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm sm:pr-0">
-                                            <a href="#" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, Lindsay Walton</span></a>
-                                        </td>
-                                    </tr>
-
-                                    <!-- More people... -->
+                                    <?php if (isset($_GET['system'])) : ?>
+                                        <?php foreach ($dashboard->filter($system_id, $status_id) as $item) : ?>
+                                            <tr>
+                                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"><?php echo $item['customer_name'] ?></td>
+                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                    <?php
+                                                    if (strlen($item['customer_requirement']) > 20) {
+                                                        echo substr($item['customer_requirement'], 0, 20) . '...';
+                                                    } else {
+                                                        echo $item['customer_requirement'];
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <td class="flex items-center justify-end gap-x-2 sm:justify-start whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                                    <?php if ($item['status_id'] == 1) { ?>
+                                                        <div class="flex-none rounded-full p-1 text-gray-400 bg-gray-400/10">
+                                                            <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                        </div>
+                                                    <?php } elseif ($item['status_id'] == 2) { ?>
+                                                        <div class="flex-none rounded-full p-1 text-green-400 bg-green-400/10">
+                                                            <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                        </div>
+                                                    <?php } elseif ($item['status_id'] == 3) { ?>
+                                                        <div class="flex-none rounded-full p-1 text-yellow-400 bg-yellow-400/10">
+                                                            <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                        </div>
+                                                    <?php } elseif ($item['status_id'] == 4) { ?>
+                                                        <div class="flex-none rounded-full p-1 text-red-400 bg-red-400/10">
+                                                            <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                        </div>
+                                                    <?php } else { ?>
+                                                        <div class="flex-none rounded-full p-1 text-violet-400 bg-violet-400/10">
+                                                            <div class="h-1.5 w-1.5 rounded-full bg-current"></div>
+                                                        </div>
+                                                    <?php } ?>
+                                                    <div class="hidden text-gray-500 sm:block"><?php echo $item['status_name'] ?></div>
+                                                </td>
+                                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><?php echo $item['customer_tel'] ?></td>
+                                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                                    <a href="#" class="text-indigo-600 hover:text-indigo-900">รายละเอียด</a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

@@ -205,7 +205,7 @@ include("components/header.php");
                                                     </td>
                                                     <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"><?php echo $customer['customer_tel'] ?></td>
                                                     <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
-                                                        <time datetime="<?php echo $customer['start_at'] ?>"><?php echo date('d-m-Y', strtotime($customer['start_at'])) ?></time>
+                                                        <time datetime="<?php echo $customer['start_at'] ?>"><?php echo date('j F Y', strtotime($customer['start_at'])) ?></time>
                                                     </td>
                                                     <td class="hidden py-4 pl-0 pr-4 text-right text-sm leading-6 text-gray-400 sm:table-cell sm:pr-6 lg:pr-8">
                                                         <a href="customer_detail.php?customer_id=<?php echo $customer['customer_id'] ?>">

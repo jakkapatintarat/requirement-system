@@ -51,11 +51,11 @@ include("components/header.php");
                             </div>
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt class="text-sm font-medium text-gray-900">เบอร์โทรศัพท์</dt>
-                                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">0841085079</dd>
+                                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><?php echo $c_detail['customer_tel'] ?></dd>
                             </div>
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt class="text-sm font-medium text-gray-900">วันที่รับ</dt>
-                                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><time datetime="<?php echo $c_detail['start_at'] ?>"><?php echo date('d-m-Y', strtotime($c_detail['start_at'])) ?></time></dd>
+                                <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><time datetime="<?php echo $c_detail['start_at'] ?>"><?php echo date('j F Y H:i:s', strtotime($c_detail['start_at'])) ?></time></dd>
                             </div>
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt class="text-sm font-medium text-gray-900">Requirement</dt>
@@ -64,7 +64,7 @@ include("components/header.php");
                             <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                                 <dt class="text-sm font-medium text-gray-900">วันที่ส่งมอบ</dt>
                                 <?php if ($c_detail['end_at'] != NULL) : ?>
-                                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><time datetime="<?php echo $c_detail['end_at'] ?>"><?php echo date('d-m-Y', strtotime($c_detail['end_at'])) ?></time></dd>
+                                    <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0"><time datetime="<?php echo $c_detail['end_at'] ?>"><?php echo date('j F Y H:i:s', strtotime($c_detail['end_at'])) ?></time></dd>
                                 <?php else : ?>
                                     <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">ยังไม่สำเร็จ</dd>
                                 <?php endif; ?>

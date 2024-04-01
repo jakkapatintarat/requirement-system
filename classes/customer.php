@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set("Asia/Bangkok");
 class Customer
 {
     public $pdo;
@@ -79,13 +79,25 @@ class Customer
         $customer_id = $data['customer_id'];
         $status_id = $data['status_id'];
         $system_id = $data['system_id'];
-
-        $status = $this->pdo->prepare("UPDATE customers SET status_id = :status_id WHERE customer_id = :customer_id");
-        $status->execute([
-            "customer_id" => $customer_id,
-            "status_id" => $status_id
-        ]);
-        echo "<script>window.location.href = 'system_customer.php?system_id=" . $system_id . "'</script>";
+        $time = date('Y-m-d H:i:s'); //กำหนดวันเวลาที่เพิ่มข้อมูล
+        if ($status_id == 2) { // ถ้า status เป็น success ให้เพิ่มเวลาจบ requirement
+            $status = $this->pdo->prepare("UPDATE customers SET status_id = :status_id, end_at = :end_at WHERE customer_id = :customer_id");
+            $status->execute([
+                "customer_id" => $customer_id,
+                "status_id" => $status_id,
+                "end_at" => $time
+            ]);
+            echo "<script>window.location.href = 'system_customer.php?system_id=" . $system_id . "'</script>";
+        } else { // ถ้า status_id ไม่ใช่ 2 ให้เปลี่ยน end_at เป็น NULL
+            $end_at = null;
+            $status = $this->pdo->prepare("UPDATE customers SET status_id = :status_id, end_at = :end_at WHERE customer_id = :customer_id");
+            $status->execute([
+                "customer_id" => $customer_id,
+                "status_id" => $status_id,
+                "end_at" => $end_at
+            ]);
+            echo "<script>window.location.href = 'system_customer.php?system_id=" . $system_id . "'</script>";
+        }
     }
 
     // รายละเอียดลูกค้า by Id
