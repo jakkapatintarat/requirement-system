@@ -56,7 +56,21 @@ class Customer
     // แก้ไขข้อมูล customer
     public function update_customer($data)
     {
-        print_r($data);
+        $update_customer = $this->pdo->prepare(
+            "UPDATE customers 
+            SET customer_name = :customer_name, 
+            customer_requirement = :customer_requirement, 
+            customer_tel = :customer_tel
+            WHERE customer_id = :customer_id"
+        );
+        $update_customer->execute([
+            "customer_name" => $data["u_c_name"],
+            "customer_requirement" => $data["u_c_req"],
+            "customer_tel" => $data["u_c_tel"],
+            "customer_id" => $data["u_c_id"],
+        ]);
+
+        echo "<script>window.location.href = 'system_customer.php?system_id=" . $data['system_id'] . "'</script>";
     }
 
     // แก้ไขสถานะ
