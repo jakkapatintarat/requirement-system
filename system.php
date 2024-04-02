@@ -184,12 +184,49 @@ include("components/header.php");
                                 </div>
                                 <div class="mt-1 flex items-center gap-x-2 text-xs leading-5 text-gray-500">
                                     <p class="whitespace-nowrap">Customers : </p>
-                                        <p class="truncate"><?php echo $customers[$system['system_id']] ?> peoples</p>
+                                    <p class="truncate"><?php echo $customers[$system['system_id']] ?> peoples</p>
                                 </div>
                             </div>
                             <div class="flex flex-none items-center gap-x-4">
                                 <a href="system_customer.php?system_id=<?php echo $system['system_id'] ?>" class="hidden rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:block">View system</a>
-                                <button data-modal-target="edit-modal" data-modal-toggle="edit-modal" class="hidden rounded-md bg-amber-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-amber-600 sm:block">Edit system</button>
+                                <!-- ปุุ่ม แก้ไข สถานะ -->
+                                <div x-data="{ modalOpen: false }" @keydown.escape.window="modalOpen = false" class="relative w-auto h-auto">
+                                    <button @click="modalOpen=true" class="hidden rounded-md bg-amber-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-amber-600 sm:block">
+                                        Edit system
+                                    </button>
+                                    <template x-teleport="body">
+                                        <div x-show="modalOpen" class="fixed top-0 left-0 z-[99] flex items-center justify-center w-screen h-screen" x-cloak>
+                                            <div x-show="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="modalOpen=false" class="absolute inset-0 w-full h-full bg-black bg-opacity-40"></div>
+                                            <div x-show="modalOpen" x-trap.inert.noscroll="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative w-full py-6 bg-gray-700 px-2 sm:max-w-sm sm:rounded-lg">
+                                                <div class="flex items-center justify-between py-2">
+                                                    <button @click="modalOpen=false" class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 mt-5 mr-5 text-gray-600 rounded-full hover:text-gray-800 hover:bg-gray-50">
+                                                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                                <div class="relative w-auto">
+                                                    <form action="" method="POST" class="p-4 md:p-auto">
+                                                        <div class="grid gap-4 mb-4 grid-cols-2">
+                                                            <div class="col-span-2">
+                                                                <label for="updatesystem_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+                                                                <input type="text" name="updatesystem_name" id="updatesystem_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="New system name" required>
+                                                                <input type="text" value="<?php echo $system['system_id'] ?>" name="updatesystem_id" id="updatesystem_id" hidden>
+                                                            </div>
+                                                        </div>
+                                                        <button type="submit" class="text-white inline-flex items-center bg-amber-500 hover:bg-ember-700 focus:ring-4 focus:outline-none focus:ring-ember-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-ember-500 dark:hover:bg-ember-600 dark:focus:ring-ember-300">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                                                                <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+                                                                <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+                                                            </svg>
+                                                            Update System
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
                                 <form action="" method="GET" id="deleteForm">
                                     <input type="text" hidden value="<?php echo $system['system_id'] ?>" name="deletesystem_id">
                                     <button type="submit" onclick="confirmDelete(event)" class="hidden rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-500 sm:block">Delete system</button>
@@ -200,9 +237,7 @@ include("components/header.php");
                         <!-- edit modal -->
                         <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
                             <div class="relative p-4 w-full max-w-md max-h-full">
-                                <!-- Modal content -->
                                 <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                    <!-- Modal header -->
                                     <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                             Edit System
@@ -214,7 +249,6 @@ include("components/header.php");
                                             <span class="sr-only">Close modal</span>
                                         </button>
                                     </div>
-                                    <!-- Modal body -->
                                     <form action="" method="POST" class="p-4 md:p-5">
                                         <div class="grid gap-4 mb-4 grid-cols-2">
                                             <div class="col-span-2">
@@ -234,6 +268,8 @@ include("components/header.php");
                                 </div>
                             </div>
                         </div>
+
+
                     <?php } ?>
                 </ul>
 

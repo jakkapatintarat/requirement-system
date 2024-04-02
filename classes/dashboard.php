@@ -48,36 +48,51 @@ class Dashboard
     }
 
     // filter หาข้อมูลด้วย ระบบ และ สถานะ
-    public function filter($system_id, $status)
+    public function filter($system_id, $status, $c_name)
     {
-        // ค้นหาข้อมูลระบบ
-        if ($status != '') {
-            $stmt = $this->pdo->prepare(
-                'SELECT c.*, s.status_name 
+        $stmt = $this->pdo->prepare(
+            'SELECT c.*, s.status_name 
                 FROM customers c
                 INNER JOIN status s ON c.status_id = s.status_id
-                WHERE c.system_id = :system_id AND c.status_id = :status_id'
-            );
-            $stmt->execute([
-                'system_id' => $system_id,
-                'status_id' => $status
-            ]);
-            // $stmt->fetchAll(PDO::FETCH_ASSOC);
-            // print_r($result);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            $stmt = $this->pdo->prepare(
-                'SELECT customers.*, status.status_name
-                FROM customers 
-                INNER JOIN status ON customers.status_id = status.status_id 
-                WHERE customers.system_id = :system_id'
-            );
-            $stmt->execute([
-                'system_id' => $system_id
-            ]);
-            // $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            // print_r($result);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+                WHERE c.system_id LIKE :system_id OR c.status_id LIKE :status_id OR c.customer_name LIKE :c_name'
+        );
+        $stmt->execute([
+            'system_id' => $system_id,
+            'status_id' => $status,
+            'c_name' => $c_name,
+        ]);
+        // $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // print_r($result);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // ค้นหาข้อมูลระบบ
+        // if ($status != '') {
+        //     $stmt = $this->pdo->prepare(
+        //         'SELECT c.*, s.status_name 
+        //         FROM customers c
+        //         INNER JOIN status s ON c.status_id = s.status_id
+        //         WHERE c.system_id = :system_id AND c.status_id = :status_id AND c.customer_name LIKE :c_name'
+        //     );
+        //     $stmt->execute([
+        //         'system_id' => $system_id,
+        //         'status_id' => $status,
+
+        //     ]);
+        //     // $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //     // print_r($result);
+        //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // } else {
+        //     $stmt = $this->pdo->prepare(
+        //         'SELECT customers.*, status.status_name
+        //         FROM customers 
+        //         INNER JOIN status ON customers.status_id = status.status_id 
+        //         WHERE customers.system_id = :system_id'
+        //     );
+        //     $stmt->execute([
+        //         'system_id' => $system_id
+        //     ]);
+        //     // $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        //     // print_r($result);
+        //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // }
     }
 }

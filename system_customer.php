@@ -32,10 +32,10 @@ include("components/header.php");
         $cus->delete_customer($data);
     }
 
-    if (isset($_GET['customer_edit_status'])) {
-        $data = $_GET;
-        $cus->update_status($data);
-    }
+    // if (isset($_GET['customer_edit_status'])) {
+    //     $data = $_GET;
+    //     $cus->update_status($data);
+    // }
 
     if (isset($_GET['u_c_name'])) {
         $data = $_GET;
@@ -55,10 +55,12 @@ include("components/header.php");
             <div class="container mt-5">
                 <?php
                 //ทดสอบข้อมูล
-                if (isset($_GET['u_c_name'])) {
+                if (isset($_GET['customer_edit_status'])) {
                     $data = $_GET;
-                    $cus->update_customer($data);
+                    $cus->update_status($data);
                 }
+
+                // print_r($customers);
                 ?>
                 <div class="px-4 sm:px-6 lg:px-8">
                     <div class="sm:flex sm:items-center">
@@ -144,63 +146,56 @@ include("components/header.php");
                                                             <div class="hidden text-gray-500 sm:block"><?php echo $customer['status_name'] ?></div>
 
                                                             <!-- ปุุ่ม แก้ไข สถานะ -->
-                                                            <button type="button" data-modal-target="edit-s-modal" data-modal-toggle="edit-s-modal" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1.5 py-1 me-2 mb-2 dark:focus:ring-yellow-900">
-                                                                <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
-                                                                </svg>
-                                                            </button>
-                                                            <!-- Edit status modal edit-s-modal -->
-                                                            <div id="edit-s-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-                                                                <div class="relative p-4 w-full max-w-md max-h-full">
-                                                                    <!-- Modal content -->
-                                                                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
-                                                                        <!-- Modal header -->
-                                                                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-                                                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                                                แก้ไขสถานะ
-                                                                            </h3>
-                                                                            <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="edit-s-modal">
-                                                                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                                                                </svg>
-                                                                                <span class="sr-only">Close modal</span>
-                                                                            </button>
-                                                                        </div>
-                                                                        <!-- Modal body -->
-                                                                        <div class="p-4 md:p-5">
-                                                                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">เลือกสถานะเพื่อแก้ไข</p>
-                                                                            <ul class="my-4 space-y-3">
-                                                                                <?php foreach ($show_status as $status) : ?>
-                                                                                    <li>
-                                                                                        <?php if ($status['status_id'] == 1) { ?>
-                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-blue-50 hover:bg-blue-100 group hover:shadow dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white">
-                                                                                                <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
-                                                                                            </a>
-                                                                                        <?php } elseif ($status['status_id'] == 2) { ?>
-                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-green-50 hover:bg-green-100 group hover:shadow dark:bg-green-600 dark:hover:bg-green-500 dark:text-white">
-                                                                                                <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
-                                                                                            </a>
-                                                                                        <?php } elseif ($status['status_id'] == 3) { ?>
-                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-yellow-900 rounded-lg bg-yellow-50 hover:bg-yellow-100 group hover:shadow dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:text-white">
-                                                                                                <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
-                                                                                            </a>
-                                                                                        <?php } elseif ($status['status_id'] == 4) { ?>
-                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-red-900 rounded-lg bg-red-50 hover:bg-red-100 group hover:shadow dark:bg-red-600 dark:hover:bg-red-500 dark:text-white">
-                                                                                                <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
-                                                                                            </a>
-                                                                                        <?php } else { ?>
-                                                                                            <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-violet-50 hover:bg-violet-100 group hover:shadow dark:bg-violet-600 dark:hover:bg-violet-500 dark:text-white">
-                                                                                                <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
-                                                                                            </a>
-                                                                                        <?php }; ?>
-                                                                                    </li>
-                                                                                <?php endforeach; ?>
-                                                                            </ul>
+                                                            <div x-data="{ modalOpen: false }" @keydown.escape.window="modalOpen = false" class="relative w-auto h-auto">
+                                                                <button @click="modalOpen=true" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-1.5 py-1 me-2 mb-2 dark:focus:ring-yellow-900">
+                                                                    <svg class="w-4 h-4 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z" />
+                                                                    </svg>
+                                                                </button>
+                                                                <template x-teleport="body">
+                                                                    <div x-show="modalOpen" class="fixed top-0 left-0 z-[99] flex items-center justify-center w-screen h-screen" x-cloak>
+                                                                        <div x-show="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="modalOpen=false" class="absolute inset-0 w-full h-full bg-black bg-opacity-40"></div>
+                                                                        <div x-show="modalOpen" x-trap.inert.noscroll="modalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative w-full py-6 bg-gray-900 px-2 sm:max-w-sm sm:rounded-lg">
+                                                                            <div class="flex items-center justify-between py-3">
+                                                                                <button @click="modalOpen=false" class="absolute top-0 right-0 flex items-center justify-center w-8 h-8 mt-5 mr-5 text-gray-600 rounded-full hover:text-gray-800 hover:bg-gray-50">
+                                                                                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                                                    </svg>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="relative w-auto">
+                                                                                <ul>
+                                                                                    <?php foreach ($show_status as $status) : ?>
+                                                                                        <li class="py-3">
+                                                                                            <?php if ($status['status_id'] == 1) { ?>
+                                                                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-blue-50 hover:bg-blue-100 group hover:shadow dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white">
+                                                                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                                                                </a>
+                                                                                            <?php } elseif ($status['status_id'] == 2) { ?>
+                                                                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-green-50 hover:bg-green-100 group hover:shadow dark:bg-green-600 dark:hover:bg-green-500 dark:text-white">
+                                                                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                                                                </a>
+                                                                                            <?php } elseif ($status['status_id'] == 3) { ?>
+                                                                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-yellow-900 rounded-lg bg-yellow-50 hover:bg-yellow-100 group hover:shadow dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:text-white">
+                                                                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                                                                </a>
+                                                                                            <?php } elseif ($status['status_id'] == 4) { ?>
+                                                                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-red-900 rounded-lg bg-red-50 hover:bg-red-100 group hover:shadow dark:bg-red-600 dark:hover:bg-red-500 dark:text-white">
+                                                                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                                                                </a>
+                                                                                            <?php } else { ?>
+                                                                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $customer['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-violet-50 hover:bg-violet-100 group hover:shadow dark:bg-violet-600 dark:hover:bg-violet-500 dark:text-white">
+                                                                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                                                                </a>
+                                                                                            <?php }; ?>
+                                                                                        </li>
+                                                                                    <?php endforeach; ?>
+                                                                                </ul>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
+                                                                </template>
                                                             </div>
-                                                            <!-- end status modal -->
                                                         </div>
                                                     </td>
                                                     <td class="hidden py-4 pl-0 pr-8 text-sm leading-6 text-gray-400 md:table-cell lg:pr-20"><?php echo $customer['customer_tel'] ?></td>
@@ -230,7 +225,9 @@ include("components/header.php");
                                                             </button>
                                                         </form>
                                                     </td>
+
                                                 </tr>
+
 
                                                 <!-- Edit modal -->
                                                 <div id="edit-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
@@ -283,6 +280,8 @@ include("components/header.php");
                                                     </div>
                                                 </div>
                                                 <!-- end edit modal -->
+
+
                                             <?php endforeach; ?>
 
 
@@ -296,6 +295,59 @@ include("components/header.php");
                     </div>
                 </div>
 
+                <!-- Edit status modal edit-s-modal -->
+                <div id="edit-s-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+                    <div class="relative p-4 w-full max-w-md max-h-full">
+                        <!-- Modal content -->
+                        <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                            <!-- Modal header -->
+                            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                    แก้ไขสถานะ
+                                </h3>
+                                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="edit-s-modal">
+                                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                    </svg>
+                                    <span class="sr-only">Close modal</span>
+                                </button>
+                            </div>
+                            <!-- Modal body -->
+                            <div class="p-4 md:p-5">
+                                <p class="text-sm font-normal text-gray-500 dark:text-gray-400">เลือกสถานะเพื่อแก้ไข</p>
+                                <ul class="my-4 space-y-3">
+                                    <?php foreach ($status_modal['status'] as $status) : ?>
+                                        <li>
+                                            <?php echo $status['customer_id'] ?>
+                                            <?php if ($status['status_id'] == 1) { ?>
+                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $status_modal['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-blue-50 hover:bg-blue-100 group hover:shadow dark:bg-blue-600 dark:hover:bg-blue-500 dark:text-white">
+                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                </a>
+                                            <?php } elseif ($status['status_id'] == 2) { ?>
+                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $status_modal['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-green-50 hover:bg-green-100 group hover:shadow dark:bg-green-600 dark:hover:bg-green-500 dark:text-white">
+                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                </a>
+                                            <?php } elseif ($status['status_id'] == 3) { ?>
+                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $status_modal['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-yellow-900 rounded-lg bg-yellow-50 hover:bg-yellow-100 group hover:shadow dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:text-white">
+                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                </a>
+                                            <?php } elseif ($status['status_id'] == 4) { ?>
+                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $status_modal['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-red-900 rounded-lg bg-red-50 hover:bg-red-100 group hover:shadow dark:bg-red-600 dark:hover:bg-red-500 dark:text-white">
+                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                </a>
+                                            <?php } else { ?>
+                                                <a href="system_customer.php?status_id=<?php echo $status['status_id'] ?>&customer_id=<?php echo $status_modal['customer_id'] ?>&system_id=<?php echo $system_id ?>&customer_edit_status='1'" class="flex items-center p-3 text-base font-bold text-gray-900 rounded-lg bg-violet-50 hover:bg-violet-100 group hover:shadow dark:bg-violet-600 dark:hover:bg-violet-500 dark:text-white">
+                                                    <span class="flex-1 ms-3 whitespace-nowrap"><?php echo $status['status_name'] ?></span>
+                                                </a>
+                                            <?php }; ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end Edit status modal -->
 
             </div>
         </div>
@@ -345,6 +397,7 @@ include("components/header.php");
             </div>
         </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
 </body>

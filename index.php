@@ -28,6 +28,7 @@ include("components/header.php");
             if (isset($_GET['system'])) {
                 $system_id = $_GET['system'];
                 $status_id = $_GET['status'];
+                $c_name = $_GET['c_name'];
             }
 
             ?>
@@ -56,7 +57,7 @@ include("components/header.php");
                             <dl class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                                 <div class="flex justify-between gap-x-4 py-3">
                                     <dt class="text-gray-500">Last create</dt>
-                                    <dd class="text-gray-700"><?php echo $systems['system']['system_name'] ?></dd>
+                                    <dd class="text-gray-700"><?php echo $systems['system']['system_name'] ?? 'ยังไม่มีข้อมูล' ?></dd>
                                 </div>
                                 <div class="flex justify-between gap-x-4 py-3">
                                     <dt class="text-gray-500">Amount</dt>
@@ -76,11 +77,14 @@ include("components/header.php");
                             <dl class="-my-3 divide-y divide-gray-100 px-6 py-4 text-sm leading-6">
                                 <div class="flex justify-between gap-x-4 py-3">
                                     <dt class="text-gray-500">Last create</dt>
-                                    <dd class="text-gray-600">ชื่อ: <?php echo $customers['customer']['customer_name'] ?></dd>
-                                    <dd class="text-gray-600">ระบบ: <?php echo $customers['customer']['system_name'] ?></dd>
-                                    <dd class="text-gray-700"><time datetime="<?php echo $customers['customer']['start_at'] ?>"><?php echo date('j F Y', strtotime($customers['customer']['start_at'])) ?></time>
-                                    </dd>
-
+                                    <dd class="text-gray-600">ชื่อ: <?php echo $customers['customer']['customer_name'] ?? 'ยังไม่มีข้อมูล' ?></dd>
+                                    <dd class="text-gray-600">ระบบ: <?php echo $customers['customer']['system_name'] ?? 'ยังไม่มีข้อมูล' ?></dd>
+                                    <?php if (isset($customers['customer']['start_at'])) : ?>
+                                        <dd class="text-gray-700"><time datetime="<?php echo $customers['customer']['start_at'] ?>"><?php echo date('j F Y', strtotime($customers['customer']['start_at'])) ?? 'ยังไม่มีข้อมูล' ?></time>
+                                        </dd>
+                                    <?php else : ?>
+                                        <dd class="text-gray-600">วันที่: ยังไม่มีข้อมูล</dd>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="flex justify-between gap-x-4 py-3">
                                     <dt class="text-gray-500">Amount</dt>
@@ -106,7 +110,7 @@ include("components/header.php");
                         <div class="flex flex-col sm:flex-row">
                             <div class="mr-2">
                                 <select class="w-full border-gray-300 mr-0 sm:mr-2 mb-2 sm:mb-0 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" name="system" id="system">
-                                    <option value="" hidden>ระบบ</option>
+                                    <option value="" hidden>เลือกระบบ</option>
                                     <?php foreach ($show_system as $item) : ?>
                                         <option value="<?php echo $item['system_id'] ?>">
                                             <?php echo $item['system_name'] ?></option>
@@ -123,7 +127,7 @@ include("components/header.php");
                                 </select>
                             </div>
                             <div class="mr-2">
-                                <input class="w-full border-gray-300 mr-0 sm:mr-2 mb-2 sm:mb-0 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" id="name" name="name" value="" placeholder="ค้นหาชื่อลูกค้า">
+                                <input class="w-full border-gray-300 mr-0 sm:mr-2 mb-2 sm:mb-0 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" type="text" id="c_name" name="c_name" value="" placeholder="ค้นหาชื่อลูกค้า">
                             </div>
 
                             <div class="flex justify-center ">
@@ -144,9 +148,6 @@ include("components/header.php");
                 <div class="sm:flex sm:items-center">
                     <div class="sm:flex-auto">
                         <h1 class="text-base font-semibold leading-6 text-gray-900">ภาพรวมระบบ</h1>
-                        <!-- <p class="mt-2 text-sm text-gray-600">รายการภาพรวม ระบบ <span>
-                                ชื่อระบบ </span> สถานะ<span>
-                                ชื่อสถานะ </span></p> -->
                     </div>
                 </div>
                 <div class="mt-5 flow-root">
@@ -166,7 +167,7 @@ include("components/header.php");
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
                                     <?php if (isset($_GET['system'])) : ?>
-                                        <?php foreach ($dashboard->filter($system_id, $status_id) as $item) : ?>
+                                        <?php foreach ($dashboard->filter($system_id, $status_id, $c_name) as $item) : ?>
                                             <tr>
                                                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"><?php echo $item['customer_name'] ?></td>
                                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
