@@ -4,7 +4,7 @@
 // $username = 'root';
 // $password = '';
 
-$host = 'k3xio06abqa902qt.cbetxkdyhwsb.us-east-1.rds.amazonaws.com	';
+$host = 'k3xio06abqa902qt.cbetxkdyhwsb.us-east-1.rds.amazonaws.com';
 $db = 'qkohpzzxolcaccqk';
 $username = 'gisbn60i7vltgfan';
 $password = 's4oazrh8ishg1ge9';
